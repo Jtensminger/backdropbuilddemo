@@ -1,39 +1,28 @@
 use std::f32::consts::PI;
-
 use bevy::prelude::*;
 use bevy_prototype_lyon::prelude::*;
-use bevy::render::deterministic::DeterministicRenderingConfig;
+
+mod helper;
+use helper::HelperPlugin;
 
 
 fn main() {
     App::new()
         .insert_resource(Msaa::Sample4)
         .insert_resource(ClearColor(Color::WHITE))
+
         .add_plugins(DefaultPlugins)
+        .add_plugins(HelperPlugin)
         .add_plugins(ShapePlugin)
-        .add_systems(Startup,
-                (
-                        setup_camera
-                ).chain()
-        )
+
         .add_systems(Update, (
                 setup_circle,
                 setup_sink,
                 setup_arrow,
                 setup_interface,
-                setup_circum_points
+                setup_circum_points,
         ))
         .run();
-}
-
-fn setup_camera(
-        mut commands: Commands,
-        mut deterministic_rendering_config: ResMut<DeterministicRenderingConfig>,
-) {
-        // Safe default.
-        deterministic_rendering_config.stable_sort_z_fighting = true;
-        // 2d camera
-        commands.spawn(Camera2dBundle::default());
 }
 
 fn setup_circle(mut commands: Commands) {
@@ -50,6 +39,23 @@ fn setup_circle(mut commands: Commands) {
                 },
                 Fill::color(Color::ORANGE_RED),
                 Stroke::new(Color::BLACK, 5.0),
+        ));
+
+        /* Circle Origin Point */
+        commands.spawn((
+                ShapeBundle {
+                        path: GeometryBuilder::build_as(&shapes::Circle {
+                                radius: 2.0,
+                                center: Vec2::new(0., 0.),
+                        }),
+                        spatial: SpatialBundle {
+                                transform: Transform::from_xyz(0., 0., 4.),
+                                ..default()
+                        },
+                        ..default()
+                },
+                Stroke::new(Color::BLACK, 1.0),
+                Fill::color(Color::CYAN),
         ));
 }
 
@@ -129,7 +135,7 @@ fn setup_interface(mut commands: Commands) {
         let centre_x = (&points[0][0] + &points[2][0]) / 2.;
         let centre_y = (&points[0][1] + &points[2][1]) / 2.;
         let centroid = Vec2::new(centre_x, centre_y);
-        info!("Centre: {:?}", centroid);
+        //info!("Centre: {:?}", centroid);
 
         let shape = shapes::RoundedPolygon {
                 points: points.into_iter().collect(),
