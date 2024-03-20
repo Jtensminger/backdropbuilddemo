@@ -43,7 +43,6 @@ fn toggle_cursor_helper(
         mut next_state: ResMut<NextState<CursorHelperState>>,
         keyboard_input: Res<ButtonInput<KeyCode>>,
 ) {
-        info!("Current state: {:?}", state.get());
         if keyboard_input.just_pressed(KeyCode::KeyC) {
                 match state.get() {
                         CursorHelperState::Enabled  => next_state.set(CursorHelperState::Disabled),
@@ -54,7 +53,7 @@ fn toggle_cursor_helper(
 
 /// We will store the world position of the mouse cursor here.
 #[derive(Resource, Default)]
-struct MyWorldCoords(Vec2);
+pub struct MyWorldCoords(Vec2);
 
 /// Used to help identify our main camera
 #[derive(Component)]
@@ -70,7 +69,7 @@ fn setup_cameras(
 }
 
 #[derive(Component)]
-struct CursorPositionText;
+pub struct CursorPositionText;
 
 fn setup_cursor_world_position(
         mut mycoords: ResMut<MyWorldCoords>,
@@ -93,7 +92,6 @@ fn setup_cursor_world_position(
             .map(|ray| ray.origin.truncate())
         {
                 mycoords.0 = world_position;
-                info!("({:.2}, {:.2})", world_position.x, world_position.y);
         }
 }
 
@@ -115,7 +113,6 @@ fn update_cursor_position(
                                         .map(|ray| ray.origin.truncate())
                                 {
                                         mycoords.0 = world_position;
-                                        info!("({:.2}, {:.2})", world_position.x, world_position.y);
                                 }
                         }
                 }
@@ -123,10 +120,8 @@ fn update_cursor_position(
 }
 
 fn setup_cursor_position_text(
-        mut commands: Commands,
-        mycoords: ResMut<MyWorldCoords>
+        mut commands: Commands
 ) {
-        let world_position = mycoords.0.clone();
                 // Text with one section
                 commands.spawn((
                         // Create a TextBundle that has a Text with a single section.

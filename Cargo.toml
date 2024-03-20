@@ -13,5 +13,11 @@ opt-level = 1
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
-bevy = "0.13.0"
 bevy_prototype_lyon = "0.11.0"
+bevy-inspector-egui = "0.23.2"
+bevy_egui = "0.25.0"
+egui = "0.26.2"
+
+[dependencies.bevy]
+version = "0.13.0"
+default-features = true
